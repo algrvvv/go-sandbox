@@ -1,9 +1,10 @@
 package src
 
 import (
-	"github.com/gorilla/websocket"
 	"net/http"
 	"text/template"
+
+	"github.com/gorilla/websocket"
 )
 
 var (

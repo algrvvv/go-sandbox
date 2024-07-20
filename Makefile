@@ -9,6 +9,8 @@ build:
 run:
 	docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v ./go-runner.tar:/go-runner.tar go-sandbox
 
-dev: build run
+dev: format build run
 
-dev: format run
+gr:
+	@mkdir -p /tmp/go-sandbox/
+	@go run main.go
