@@ -1,6 +1,7 @@
 package src
 
 type ExecutionResult struct {
+	Code   string // код, который был отправлен на сборку
 	Output string // вывод исполняемого кода
 	Error  string // ошибка при выполнении кода
 }

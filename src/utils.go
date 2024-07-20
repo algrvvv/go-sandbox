@@ -23,7 +23,7 @@ func executeUserCode(code string) ExecutionResult {
 	codeFilePath := filepath.Join("/tmp/go-sandbox", fileName)
 	if err := os.WriteFile(codeFilePath, []byte(code), 0644); err != nil {
 		log.Println("write file err: ", err)
-		return ExecutionResult{"", err.Error()}
+		return ExecutionResult{code, "", err.Error()}
 	}
 	defer os.Remove(codeFilePath)
 
@@ -44,7 +44,7 @@ func executeUserCode(code string) ExecutionResult {
 
 	if err := cmd.Start(); err != nil {
 		log.Println("start execution err: ", err)
-		return ExecutionResult{out.String(), err.Error()}
+		return ExecutionResult{code, out.String(), err.Error()}
 	}
 
 	done := make(chan error)
@@ -53,14 +53,14 @@ func executeUserCode(code string) ExecutionResult {
 	select {
 	case <-time.After(10 * time.Second):
 		_ = cmd.Process.Kill()
-		return ExecutionResult{out.String(), "Timeout: code execution took too long"}
+		return ExecutionResult{code, out.String(), "Timeout: code execution took too long"}
 	case err := <-done:
 		if err != nil {
 			log.Println("execution err: ", err.Error())
 			errMsg := fmt.Sprintf("%s\n%s", stderr.String(), err.Error())
-			return ExecutionResult{out.String(), errMsg}
+			return ExecutionResult{code, out.String(), errMsg}
 		}
 	}
 
-	return ExecutionResult{out.String(), stderr.String()}
+	return ExecutionResult{code, out.String(), stderr.String()}
 }
