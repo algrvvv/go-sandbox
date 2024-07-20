@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/algrvvv/go-sandbox/src"
 	"log"
 	"net/http"
+
+	"github.com/algrvvv/go-sandbox/src"
 )
 
 func main() {
