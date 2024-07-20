@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Go-sandbox</title>
+</head>
+<body>
+    <h1>Go sandbox</h1>
+    <form action="/run" method="POST">
+        <label for="code"></label>
+        <textarea name="code" id="code" cols="80" rows="20"></textarea>
+        <button type="submit">Run</button>
+    </form>
+
+    {{if .Output}}
+    <h2>Output</h2>
+    <pre>{{.Output}}</pre>
+    {{end}}
+
+    {{if .Error}}
+    <h2>Error</h2>
+    <pre>{{.Error}}</pre>
+    {{end}}
+
+</body>
+</html>
