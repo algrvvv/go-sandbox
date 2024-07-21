@@ -4,9 +4,9 @@ format:
 
 # сборка проекта
 build: rb
-	@docker volume create code-files
+	# @docker volume create code-files
 	@docker save -o go-runner.tar go-runner
-	@docker build --no-cache -t go-sandbox .
+	@docker build -t go-sandbox .
 
 # запуск приложения используя докер
 run:
@@ -20,7 +20,7 @@ sd:
 
 # билд раннера. rb - runner build
 rb:
-	@docker build --no-cache -t go-runner ./executor
+	@docker build -t go-runner ./executor
 
 # запуск раннера. rr - runner run
 rr:
