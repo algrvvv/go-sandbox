@@ -27,13 +27,10 @@ func executeUserCode(code string) ExecutionResult {
 	}
 	defer os.Remove(codeFilePath)
 
-	//cmd := exec.Command("docker", "run", "--rm", "-v", "/tmp/go-sandbox:/app",
-	//	"-v", "/var/run/docker.sock:/var/run/docker.sock",
-	//	"--security-opt", "seccomp=seccomp.json",
-	//	"go-runner", "go", "run", "/app/"+fileName)
-
-	cmd := exec.Command("docker", "run", "--rm", "-v", "/tmp/go-sandbox:/app",
-		"go-runner", "go", "run", "/app/"+fileName)
+	// TODO "--security-opt", "seccomp=seccomp.json",
+	cmd := exec.Command("docker", "run", "--rm",
+		"-v", "code-files:/app",
+		"go-runner", "/app/"+fileName)
 
 	var (
 		out    bytes.Buffer
