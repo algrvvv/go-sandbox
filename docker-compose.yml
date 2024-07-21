@@ -1,0 +1,15 @@
+version: '3.0'
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - code-files:/tmp/go-sandbox
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "./main" ]
+
+volumes:
+  code-files:
