@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>Go sandbox</h1>
-    <form action="/run" method="POST">
+    <form action="/offline/run" method="POST">
         <label for="code"></label>
         <textarea name="code" id="code" cols="80" rows="20">{{if .Code}}{{.Code}}{{end}}</textarea>
         <button type="submit">Run</button>
