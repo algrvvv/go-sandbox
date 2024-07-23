@@ -88,7 +88,7 @@
 <body>
     <div class="editor-container">
         <textarea id="codeEditor" class="code-editor" name="code"></textarea>
-        <button onclick="runHandler()">Run</button>
+        <button onclick="runHandler()" id="running-button">Run</button>
     </div>
     <div class="console-container">
         <textarea id="console" class="console" readonly></textarea>
@@ -115,6 +115,10 @@
     });
 
     function runHandler() {
+        const btn = document.getElementById('running-button');
+        btn.innerHTML = 'Running...';
+        btn.disabled = true;
+
         const code = editor.getValue();
         const consoleOutput = document.getElementById('console');
         axios.post("/offline/run", {code: code}).then(res => {
@@ -136,6 +140,9 @@
             consoleOutput.value = output
         }).catch(err => {
             console.log(err)
+        }).finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = "Run";
         })
     }
 </script>
