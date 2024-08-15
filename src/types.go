@@ -6,6 +6,9 @@ type ExecutionResult struct {
 	Error  string `json:"error"`  // ошибка при выполнении кода
 }
 
+type SessionID string
+
 type Session struct {
 	Code string // код сессии
+	Uid  string // временный идентификатор пользователя
 }

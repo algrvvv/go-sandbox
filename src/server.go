@@ -9,9 +9,10 @@ func GetNewServer() *http.ServeMux {
 
 	serv.HandleFunc("GET /", indexHandler)
 	serv.HandleFunc("GET /offline", offlineHandler)
-	serv.HandleFunc("GET /online", indexHandler)
 	serv.HandleFunc("POST /offline/run", offlineRunHandler)
-	serv.HandleFunc("GET /new", newSessionHandler)
+	serv.HandleFunc("GET /new", newOnlineHandler)
+	serv.HandleFunc("GET /online", onlineHandler)
+	serv.HandleFunc("GET /connect", connectOnlineHandler)
 	serv.HandleFunc("GET /ws", wsHandler)
 
 	return serv
