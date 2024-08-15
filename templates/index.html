@@ -6,24 +6,77 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Go-sandbox</title>
+
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            flex-direction: column;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            color: #818cf8;
+            text-decoration: none;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+        }
+
+        .connect-input {
+            background-color: #263238;
+            color: white;
+            width: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto;
+            border-radius: 20px;
+            outline: none;
+            border: none;
+            padding: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
 </head>
 <body>
-    <h1>Go sandbox</h1>
-    <form action="/offline/run" method="POST">
-        <label for="code"></label>
-        <textarea name="code" id="code" cols="80" rows="20">{{if .Code}}{{.Code}}{{end}}</textarea>
-        <button type="submit">Run</button>
-    </form>
+<div class="wrapper">
+    <h1 style="text-align: center">Go Sandbox</h1>
+    <div>
+        <p>Welcome! Select coding mode:</p>
+        <div class="btn-wrapper">
+            <a class="btn" href="/offline">Offline</a>
+            <a class="btn" href="/new">Online</a>
+        </div>
+        <input id="session_id" type="text" class="connect-input" placeholder="type session id">
+        <button onclick="connect()" class="btn"
+                style="display: flex; justify-content: center; align-items: center; margin: 5px auto">Connect
+        </button>
+    </div>
+</div>
 
-    {{if .Output}}
-    <h2>Output</h2>
-    <pre>{{.Output}}</pre>
-    {{end}}
-
-    {{if .Error}}
-    <h2>Error</h2>
-    <pre>{{.Error}}</pre>
-    {{end}}
-
+<script>
+    function connect() {
+        const sid = document.getElementById("session_id").value;
+        window.location.href = `/connect?s=${sid}`;
+    }
+</script>
 </body>
 </html>
