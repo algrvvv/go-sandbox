@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Code Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
+            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .editor-container,
+        .console-container {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .editor-container {
+            flex: 3;
+            height: 100%;
+        }
+
+        .code-editor {
+            flex-grow: 1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .CodeMirror {
+            height: 90vh !important;
+            font-size: 18px !important;
+            line-height: 2;
+            border-radius: 20px;
+            font-family: "Jetbrains mono";
+        }
+
+        .console-container {
+            flex: 1;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .console {
+            width: 100%;
+            height: 100%;
+            background-color: #1e1e1e;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            resize: none;
+            box-sizing: border-box;
+            overflow: auto;
+            outline: none;
+        }
+
+        button {
+            background-color: #61dafb;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            align-self: flex-end;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #21a1f1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="editor-container">
+    <textarea id="codeEditor" class="code-editor" name="code"></textarea>
+    <button onclick="runHandler()" id="running-button">Run</button>
+</div>
+<div class="console-container">
+    <textarea id="console" class="console" readonly></textarea>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/go/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    const editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
+        mode: 'go',
+        theme: 'material',
+        lineNumbers: true,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        extraKeys: {
+            "utrl-Space": "autocomplete",
+        },
+        fontFamily: 'JetBrains Mono, monospace'
+    });
+    const searchParams = new URLSearchParams(window.location.search);
+    const session = searchParams.get("s");
+    const uid = searchParams.get("u");
+    const wsURL = `ws://${location.host}/ws?s=${session}&u=${uid}`
+    const socket = new WebSocket(wsURL)
+    let THISCHANGEFROMWS = false
+
+    socket.onopen = function (event) {
+        console.log("connection established: " + wsURL)
+    }
+
+    socket.onmessage = function (event) {
+        console.log(event.data)
+        THISCHANGEFROMWS = true;
+        editor.setValue(event.data);
+    }
+
+    socket.onclose = function (event) {
+        console.log("connection closed")
+    }
+
+    socket.onerror = function (error) {
+        console.error(error)
+    }
+
+    editor.on('change', function () {
+        if (!THISCHANGEFROMWS) {
+            var currentValue = editor.getValue();
+            console.log(currentValue)
+            socket.send(currentValue)
+        } else {
+            THISCHANGEFROMWS = false;
+        }
+    })
+</script>
+</body>
+
+</html>
