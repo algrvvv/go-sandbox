@@ -7,6 +7,8 @@ import (
 func GetNewServer() *http.ServeMux {
 	serv := http.NewServeMux()
 
+	serv.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
 	serv.HandleFunc("GET /", indexHandler)
 	serv.HandleFunc("GET /offline", offlineHandler)
 	serv.HandleFunc("POST /offline/run", offlineRunHandler)
