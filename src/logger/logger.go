@@ -56,6 +56,7 @@ func fmtError(err error) slog.Value {
 }
 
 func replaceAttr(_ []string, a slog.Attr) slog.Attr {
+	// nolint
 	switch a.Value.Kind() {
 	case slog.KindAny:
 		switch v := a.Value.Any().(type) {
