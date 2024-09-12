@@ -1,0 +1,13 @@
+linters:
+  enable:
+    - gocritic
+    - goimports
+    - godox
+    - gofmt
+    - unparam
+    - bodyclose
+    - nilerr
+    - nilnil
+
+run:
+  timeout: 2m  # Устанавливаем разумный таймаут, чтобы не тратить много времени на анализ.
