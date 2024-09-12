@@ -18,7 +18,10 @@
 <body>
 <div class="editor-container">
     <textarea id="codeEditor" class="code-editor" name="code"></textarea>
-    <button onclick="runHandler()" id="running-button">Run</button>
+    <div class="btn-wrapper">
+        <button onclick="gofmt()" id="fmt-button">Format</button>
+        <button onclick="runHandler()" id="running-button">Run</button>
+    </div>
 </div>
 <div class="console-container">
     <textarea id="console" class="console" readonly></textarea>
@@ -30,7 +33,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="static/js/offline.js"></script>
+<script src="/static/js/gofmt.js"></script>
+<script src="/static/js/offline.js"></script>
 </body>
 
 </html>
