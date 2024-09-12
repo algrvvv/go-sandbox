@@ -10,7 +10,9 @@ RUN mkdir -p /tmp/go-sandbox/
 
 RUN go mod download
 
-RUN go build -o main .
+RUN go build -o sandbox .
+
+RUN go install golang.org/x/tools/cmd/goimports@latest
 
 COPY go-runner.tar /go-runner.tar
 COPY entrypoint.sh /entrypoint.sh
@@ -21,4 +23,4 @@ EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["./main"]
+CMD ["./sandbox"]
