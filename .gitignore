@@ -28,3 +28,6 @@ go.work.sum
 
 # Enviroment
 .env
+
+# other files
+go-runner.tar
