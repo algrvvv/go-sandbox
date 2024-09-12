@@ -5,11 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/algrvvv/go-sandbox/src/logger"
 )
 
 func getHashedFileName(fileName string) string {
@@ -22,7 +23,7 @@ func executeUserCode(code string) ExecutionResult {
 	fileName := getHashedFileName(time.Now().Format("20060102150405")) + ".go"
 	codeFilePath := filepath.Join("/tmp/go-sandbox", fileName)
 	if err := os.WriteFile(codeFilePath, []byte(code), 0644); err != nil {
-		log.Println("write file err: ", err)
+		logger.Error("failed to write code to /tmp/go-sandbox: "+err.Error(), err)
 		return ExecutionResult{code, "", err.Error()}
 	}
 	defer os.Remove(codeFilePath)
@@ -40,7 +41,7 @@ func executeUserCode(code string) ExecutionResult {
 	cmd.Stderr = &stderr
 
 	if err := cmd.Start(); err != nil {
-		log.Println("start execution err: ", err)
+		logger.Error("failed to start docker run: "+err.Error(), err)
 		return ExecutionResult{code, out.String(), err.Error()}
 	}
 
@@ -49,11 +50,12 @@ func executeUserCode(code string) ExecutionResult {
 
 	select {
 	case <-time.After(10 * time.Second):
+		logger.Warn("docker run timeout")
 		_ = cmd.Process.Kill()
 		return ExecutionResult{code, out.String(), "Timeout: code execution took too long"}
 	case err := <-done:
 		if err != nil {
-			log.Println("execution err: ", err.Error())
+			logger.Error("docker run failed: "+err.Error(), err)
 			errMsg := fmt.Sprintf("%s\n%s", stderr.String(), err.Error())
 			return ExecutionResult{code, out.String(), errMsg}
 		}

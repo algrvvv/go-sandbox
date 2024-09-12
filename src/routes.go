@@ -10,6 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+
+	"github.com/algrvvv/go-sandbox/src/logger"
 )
 
 var (
@@ -27,11 +29,13 @@ var (
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tmp, err := template.ParseFiles("templates/index.html")
 	if err != nil {
+		logger.Error("failed to parse template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err = tmp.Execute(w, nil); err != nil {
+		logger.Error("failed to execute template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -39,11 +43,13 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func offlineHandler(w http.ResponseWriter, r *http.Request) {
 	tmp, err := template.ParseFiles("templates/offline.html")
 	if err != nil {
+		logger.Error("failed to parse template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err = tmp.Execute(w, nil); err != nil {
+		logger.Error("failed to execute template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -54,30 +60,34 @@ func offlineRunHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
+		logger.Error("failed to parse request: "+err.Error(), err)
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte(err.Error()))
 	}
 
 	res := executeUserCode(data.Code)
-	json, err := json.Marshal(res)
+	jsonData, err := json.Marshal(res)
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
+		logger.Error("failed to marshal response: "+err.Error(), err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(json)
+	_, _ = w.Write(jsonData)
 }
 
 func onlineHandler(w http.ResponseWriter, r *http.Request) {
 	tmp, err := template.ParseFiles("templates/online.html")
 	if err != nil {
+		logger.Error("failed to parse template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err = tmp.Execute(w, nil); err != nil {
+		logger.Error("failed to execute template: "+err.Error(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
