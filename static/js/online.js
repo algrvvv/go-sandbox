@@ -23,7 +23,24 @@ socket.onopen = function (event) {
 socket.onmessage = function (event) {
     console.log(event.data)
     THISCHANGEFROMWS = true;
-    editor.setValue(event.data);
+
+    let msg = JSON.parse(event.data);
+    let type = msg.type;
+    let data = msg.data;
+
+    if (type === "code") {
+        editor.setValue(data);
+    } else if (type === "console") {
+        const output = JSON.parse(event.data)
+        let finalString = "";
+
+        const out = output.data.output;
+        const err = output.data.error;
+        if (out !== "") finalString += out;
+        if (err !== "") finalString += err;
+
+        document.getElementById('console').value = finalString;
+    }
 }
 
 socket.onclose = function (event) {
@@ -36,10 +53,37 @@ socket.onerror = function (error) {
 
 editor.on('change', function () {
     if (!THISCHANGEFROMWS) {
-        var currentValue = editor.getValue();
-        console.log(currentValue)
-        socket.send(currentValue)
+        let currentValue = editor.getValue();
+        const message = {
+            type: "code",
+            data: currentValue
+        }
+        console.log(message)
+        socket.send(JSON.stringify(message))
     } else {
         THISCHANGEFROMWS = false;
     }
 })
+
+function runHandler() {
+    const btn = document.getElementById('running-button');
+    btn.innerHTML = 'Running...';
+    btn.disabled = true;
+
+    const code = editor.getValue();
+
+    const parsedURL = new URL(window.location.href)
+    const session = parsedURL.searchParams.get("s")
+    const uid = parsedURL.searchParams.get("u")
+
+    axios.post("/online/run", {
+        code: code, session: session, uid: uid
+    }).then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.error(err)
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = "Run";
+    })
+}
