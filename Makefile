@@ -1,6 +1,6 @@
 # форматирование
-format:
-	@goimports -w .
+lin:
+	golangci-lint run
 
 # сборка проекта
 build: rb
@@ -13,7 +13,9 @@ run:
 	@docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v code-files:/tmp/go-sandbox -v ./go-runner.tar:/go-runner.tar go-sandbox
 
 # для разработки. сразу форматирование, билд и запуск
-dev: format build run
+prod: lin dev
+
+dev: build run
 
 sd:
 	@docker exec -it $(filter-out $@,$(MAKECMDGOALS)) /bin/sh
