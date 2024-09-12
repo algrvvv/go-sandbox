@@ -20,18 +20,11 @@ function runHandler() {
     axios.post("/offline/run", {code: code}).then(res => {
         console.log(res)
         const err = res.data.error
+        const out = res.data.output
         let output = ""
 
-        if (res.data.output !== "") {
-            // output += `Output:\n ${res.data.output}`
-            output += `${res.data.output}`
-        }
-
-        if (err !== "") {
-            const errMessage = err.split(" ").slice(1, err.length - 1).join(" ")
-            // output += `\nError:\n ${err}`
-            output += `${err}`
-        }
+        if (out !== "") output += out
+        if (err !== "") output += err
 
         consoleOutput.value = output
     }).catch(err => {
