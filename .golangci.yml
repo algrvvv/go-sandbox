@@ -2,10 +2,12 @@ linters:
   enable:
     - gocritic
     - goimports
+    - revive
     - godox
     - gofmt
     - unparam
     - bodyclose
+    - gosec
     - nilerr
     - nilnil
 
