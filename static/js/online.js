@@ -16,6 +16,8 @@ const wsURL = `ws://${location.host}/ws?s=${session}&u=${uid}`
 const socket = new WebSocket(wsURL)
 let THISCHANGEFROMWS = false
 
+document.getElementById("session-id").innerHTML = `Session id: ${session}`
+
 socket.onopen = function (event) {
     console.log("connection established: " + wsURL)
 }
@@ -71,10 +73,6 @@ function runHandler() {
     btn.disabled = true;
 
     const code = editor.getValue();
-
-    const parsedURL = new URL(window.location.href)
-    const session = parsedURL.searchParams.get("s")
-    const uid = parsedURL.searchParams.get("u")
 
     axios.post("/online/run", {
         code: code, session: session, uid: uid

@@ -18,9 +18,13 @@
 <body>
 <div class="editor-container">
     <textarea id="codeEditor" class="code-editor" name="code"></textarea>
-    <div class="btn-wrapper">
-        <button onclick="gofmt()" id="fmt-button">Format</button>
-        <button onclick="runHandler()" id="running-button">Run</button>
+    <div class="container">
+        <p id="session-id"></p>
+
+        <div class="btn-wrapper">
+            <button onclick="gofmt()" id="fmt-button">Format</button>
+            <button onclick="runHandler()" id="running-button">Run</button>
+        </div>
     </div>
 </div>
 <div class="console-container">
