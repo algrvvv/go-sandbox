@@ -1,3 +1,9 @@
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyF") {
+        gofmt()
+    }
+});
+
 function gofmt() {
     const btn = document.getElementById('fmt-button');
     btn.innerHTML = 'Formating...';
