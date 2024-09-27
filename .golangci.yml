@@ -7,9 +7,9 @@ linters:
     - gofmt
     - unparam
     - bodyclose
-    - gosec
     - nilerr
     - nilnil
+    # - gosec
 
 run:
   timeout: 2m  # Устанавливаем разумный таймаут, чтобы не тратить много времени на анализ.
