@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/gorilla/websocket"
 
 	"github.com/algrvvv/go-sandbox/src/logger"
 )
@@ -62,4 +65,20 @@ func executeUserCode(code string) ExecutionResult {
 	}
 
 	return ExecutionResult{code, out.String(), stderr.String()}
+}
+
+func SendCountActiveUsers(sid SessionID) {
+	conns := sessions[sid]
+	connsCount := len(conns)
+
+	jsonData, _ := json.Marshal(map[string]interface{}{
+		"type": "userCount",
+		"data": connsCount,
+	})
+
+	for _, conn := range conns {
+		if err := conn.WriteMessage(websocket.TextMessage, jsonData); err != nil {
+			logger.Error("failed to send active users: "+err.Error(), err)
+		}
+	}
 }
