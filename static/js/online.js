@@ -42,6 +42,9 @@ socket.onmessage = function (event) {
         if (err !== "") finalString += err;
 
         document.getElementById('console').value = finalString;
+    } else if (type === "userCount") {
+        console.log("active user count: ", data)
+        document.getElementById('active-user-count').innerHTML = `Active user count: ${data}`
     }
 }
 
