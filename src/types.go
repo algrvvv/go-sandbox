@@ -10,5 +10,5 @@ type SessionID string
 
 type Session struct {
 	Code string // код сессии
-	Uid  string // временный идентификатор пользователя
+	UID  string // временный идентификатор пользователя
 }

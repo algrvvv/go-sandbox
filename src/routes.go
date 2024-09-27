@@ -22,13 +22,13 @@ var (
 	upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
+		CheckOrigin: func(_ *http.Request) bool {
 			return true
 		},
 	}
 )
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, _ *http.Request) {
 	tmp, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		logger.Error("failed to parse template: "+err.Error(), err)
@@ -42,7 +42,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func offlineHandler(w http.ResponseWriter, r *http.Request) {
+func offlineHandler(w http.ResponseWriter, _ *http.Request) {
 	tmp, err := template.ParseFiles("templates/offline.html")
 	if err != nil {
 		logger.Error("failed to parse template: "+err.Error(), err)
@@ -80,7 +80,7 @@ func offlineRunHandler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(jsonData)
 }
 
-func onlineHandler(w http.ResponseWriter, r *http.Request) {
+func onlineHandler(w http.ResponseWriter, _ *http.Request) {
 	tmp, err := template.ParseFiles("templates/online.html")
 	if err != nil {
 		logger.Error("failed to parse template: "+err.Error(), err)
@@ -97,7 +97,7 @@ func onlineHandler(w http.ResponseWriter, r *http.Request) {
 func onlineRunHandler(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Session string `json:"session"`
-		Uid     string `json:"uid"`
+		UID     string `json:"uid"`
 		Code    string `json:"code"`
 	}
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -116,7 +116,7 @@ func onlineRunHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if data.Uid == "" {
+	if data.UID == "" {
 		logger.Warn("u is empty")
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("u is empty"))
@@ -128,7 +128,7 @@ func onlineRunHandler(w http.ResponseWriter, r *http.Request) {
 		"type": "console",
 		// TODO планировалось, что первоначальному пользователю будет сразу же ответом приходить,
 		// но пока что будет отправляться тоже по вебсокетам.
-		"exceptedUser": data.Uid,
+		"exceptedUser": data.UID,
 		"data":         res,
 	})
 	if err != nil {
@@ -173,7 +173,7 @@ func connectOnlineHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("new connection")
+	logger.Info("new connection")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logger.Error("failed to upgrade connection: "+err.Error(), err)
