@@ -199,6 +199,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 	mu.Lock()
 	sessions[sessionID] = append(sessions[sessionID], conn)
+	SendCountActiveUsers(sessionID)
 	mu.Unlock()
 
 	defer func() {
@@ -214,6 +215,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		if len(sessions[sessionID]) == 0 {
 			delete(sessions, sessionID)
 		}
+		SendCountActiveUsers(sessionID)
 		mu.Unlock()
 		conn.Close()
 	}()
