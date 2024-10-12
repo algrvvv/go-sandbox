@@ -1,3 +1,9 @@
+install:
+	@docker volume create code-files
+	@docker build -t go-runner ./executor
+	@docker save -o go-runner.tar go-runner
+	@docker build -t go-sandbox .
+
 # форматирование
 lin:
 	golangci-lint run
